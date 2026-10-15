@@ -2,12 +2,14 @@
 set -eu
 
 fail() { printf 'Error: %s\n' "$*" >&2; exit 1; }
-usage() { printf '%s\n' 'Usage: ./install.sh [--uninstall]'; }
+usage() { printf '%s\n' 'Usage: ./install.sh [--test|--uninstall]'; }
 
 [ "$#" -le 1 ] || { usage >&2; exit 2; }
 mode=install
+include_tests=false
 case ${1-} in
     '') ;;
+    --test) include_tests=true ;;
     --uninstall) mode=uninstall ;;
     --help|-h) usage; exit 0 ;;
     *) usage >&2; exit 2 ;;
@@ -52,10 +54,16 @@ is_our_link() (
 )
 
 # 2. Visit .py files and links, skipping hidden entries and cache directories.
+# Test scripts are opt-in for installation, but always eligible for uninstall.
 # Subshells give each recursive call its own variables; directory links are skipped.
 visit_scripts() (
     for path in "$1"/*; do
         [ "${path##*/}" != __pycache__ ] || continue
+        if [ "$mode" = install ] && [ "$include_tests" = false ]; then
+            case ${path#"$source_dir/"} in
+                hello.py|AutoLaunch/logmenu_demo.py) continue ;;
+            esac
+        fi
         if [ -L "$path" ]; then
             :
         elif [ -d "$path" ]; then

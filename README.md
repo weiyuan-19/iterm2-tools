@@ -21,10 +21,16 @@
 ./install.sh
 ```
 
-当前安装器将 `Scripts/` 下的 `.py` 文件逐个软链接到 `~/Library/Application Support/iTerm2/Scripts/`，保留目录结构。忽略 `.DS_Store`、隐藏项、缓存和源软链接；可重复安装，遇到文件冲突时停止。
+默认安装将 `Scripts/` 下除以下两个测试脚本外的 `.py` 文件逐个软链接到 `~/Library/Application Support/iTerm2/Scripts/`，保留目录结构。忽略 `.DS_Store`、隐藏项、缓存和源软链接；可重复安装，遇到文件冲突时停止。
 
 - `Scripts/hello.py`：手动示例，输出到 Script Console。
 - `Scripts/AutoLaunch/logmenu_demo.py`：注册右键菜单 **日志@演示**。
+
+需要同时安装测试脚本时执行：
+
+```sh
+./install.sh --test
+```
 
 首次从 **Scripts → AutoLaunch → logmenu_demo.py** 手动启动。菜单只向当前会话插入命令，不自动回车、不广播。
 
@@ -42,7 +48,7 @@
 ./install.sh --uninstall
 ```
 
-卸载只删除指向本仓库的脚本链接，保留源文件及其他文件。
+卸载只删除指向本仓库的脚本链接，包括之前安装的测试脚本链接，保留源文件及其他文件。
 
 ## 可选配置
 
